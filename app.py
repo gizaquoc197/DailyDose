@@ -11,14 +11,16 @@ def index():
         search_query = request.form.get('search_query')
         search_type = extract_search_type(search_query)
         result = get_search_result(search_query, search_type)
-
+        print(result)   
     return render_template('index.html', result=result, search_query=request.form.get('search_query'))
+
 def extract_search_type(search_query):
     prefix = "Random"
     if search_query.startswith(prefix):
-        return search_query[len(prefix):].strip.lower()
+        return search_query[len(prefix):].strip().lower()
     else:
         return "default"
+
 def get_search_result(search_query, search_type):
     API_KEY = open('API_KEY').read()
     SEARCH_ENGINE_ID = open('SEARCH_ENGINE_ID').read()
@@ -56,6 +58,6 @@ def get_search_result(search_query, search_type):
         return results['items'][0]['link']
     else:
         return "No result found"
-
+    
 if __name__ == '__main__':
     app.run(debug=True)
