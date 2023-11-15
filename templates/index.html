@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Search</title>
+</head>
+
+<body>
+    <h1>Content Search</h1>
+    <form method="post" action="{{ url_for('index') }}">
+        <label for="search_query">Enter Search Query:</label>
+        <input type="text" id="search_query" name="search_query" required>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if search_query %}
+    <h2>Search Results for "{{ search_query }}"</h2>
+    {% if result %}
+    <p><a href="{{ result }}" target="_blank">View Result</a></p>
+    {% else %}
+    <p>No result found.</p>
+    {% endif %}
+    {% endif %}
+</body>
+
+</html>
