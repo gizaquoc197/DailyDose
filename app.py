@@ -1,6 +1,10 @@
-from flask import Flask, render_template, request
+import asyncio
+import logging
+from flask import Flask, render_template, request, jsonify
+from shazamio import Shazam
 import requests
 
+logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -13,6 +17,46 @@ def index():
         result = get_search_result(search_query, search_type)
         print(result)   
     return render_template('index.html', result=result, search_query=request.form.get('search_query'))
+
+@app.route('/shazam', methods=['GET'])
+def shazam():
+    return render_template('shazam.html')
+@app.route('/elements', methods=['GET', 'POST'])
+def elements():
+    return render_template('elements.html')
+
+@app.route('/recognize_music', methods=['POST'])
+async def recognize_music_from_frontend():
+    logging.info("Received a POST request")
+
+    audio_data = request.files.get('audio_data')
+
+    if audio_data:
+        audio_path = 'temp_audio.ogg'
+        audio_data.save(audio_path)
+
+        try:
+            result = await recognize_music(audio_path)
+            logging.info(f"Recognition result: {result}")
+            return jsonify({'result': result})
+        except Exception as e:
+            logging.error(f"Recognition error: {e}")
+            return jsonify({'error': str(e)})
+
+    logging.warning("No audio data received")
+    return jsonify({'error': 'No audio data received'})
+
+async def recognize_music(file_path):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    try:
+        shazam = Shazam()
+        out = await shazam.recognize_song(file_path)
+        print(out)
+        return out
+    finally:
+        loop.close()
 
 def extract_search_type(search_query):
     prefix = "Random"
@@ -44,7 +88,6 @@ def get_search_result(search_query, search_type):
         'q': search_query,
         'key': API_KEY,
         'cx': SEARCH_ENGINE_ID,
-        'dataRestrict': "d[0]",
         'gl': "us",
         'lr': "lang_en",
         'num': 1,

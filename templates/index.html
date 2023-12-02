@@ -4,54 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Search</title>
+    <title>DailyDose by Giza</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename ='styles/main.css')}}">
+    <noscript>
+        <link rel="stylesheet" href="{{ url_for('static', filename ='styles/noscript.css')}}" /></noscript>
 </head>
 
+<!-- Body -->
+
 <body>
-    <h1>Content Search</h1>
-    <form method="post" action="{{ url_for('index') }}">
-        <label for="search_query">Enter Search Query:</label>
-        <input type="text" id="search_query" name="search_query" required>
+    <div id="page-wrapper">
+        <header id="header">
+            <h1 id="logo"><a href="">DailyDose</a></h1>
+            <nav id="nav">
+                <ul>
+                    <li><a href="">Home</a></li>
+                    <li><a href="shazam">Shazam</a></li>
+                    <li><a href="elements">AI Meme Generator</a></li>
+                </ul>
+            </nav>
+        </header>
 
-        <button type="submit">Search</button>
-    </form>
+        <!-- Banner -->
+        <section id="banner">
+            <div class="content">
+                <div class="container">
+                    <header class="major">
+                        <h2>Search for random content</h2>
+                        <p><i>Use the magic spell: "Random ..."</i></p>
+                    </header>
+                </div>
 
-    <div>
-        <button id="voice-command-button">Start Voice Command</button>
-    </div>
+                <form method="post" action="{{ url_for('index') }}">
+                    <input type="text" id="search_query" name="search_query" required>
+                    <div class="container"><button type="submit" class="button">Search</button></div>
+                </form>
 
-    {% if search_query %}
-    <h2>Search Results for "{{ search_query }}"</h2>
-    {% if result %}
-    <p><a href="{{ result }}" target="_blank">View Result</a></p>
-    {% else %}
-    <p>No result found.</p>
-    {% endif %}
-    {% endif %}
+                <div class="container">
+                    <button id="voice-command-button" class="button primary">&#x1F399;</button>
+                </div>
+                <div class="container">
+                    {% if search_query %}
+                    <h2>Search Results for "{{ search_query }}"</h2>
+                    {% if result %}
+                </div>
+                <div class="container">
+                    <p><a href="{{ result }}" target="_blank">View Result</a></p>
+                    {% else %}
+                    <p>No result found.</p>
+                    {% endif %}
+                    {% endif %}
 
-    <script>
-        const voiceCommandButton = document.getElementById('voice-command-button');
+                </div>
 
-        if ('webkitSpeechRecognition' in window) {
-            const recognition = new webkitSpeechRecognition();
+            </div>
+        </section>
 
-            recognition.continuous = true;
-            recognition.interimResults = true;
 
-            recognition.onresult = function (event) {
-                const result = event.results[0][0].transcript.trim();
-                document.getElementById('search_query').value = result;
-            };
 
-            voiceCommandButton.addEventListener('click', function () {
-                recognition.start();
-            });
+        <script src="static/scripts/jquery.min.js"></script>
+        <script src="static/scripts/jquery.scrolly.min.js"></script>
+        <script src="static/scripts/jquery.dropotron.min.js"></script>
+        <script src="static/scripts/jquery.scrollex.min.js"></script>
+        <script src="static/scripts/browser.min.js"></script>
+        <script src="static/scripts/breakpoints.min.js"></script>
+        <script src="static/scripts/util.js"></script>
+        <script src="static/scripts//main.js"></script>
+        <script src="static/scripts/search.engine.js"></script>
+        <script src="static/scripts/shazam.js"></script>
 
-        } else {
-            voiceCommandButton.disabled = true;
-            console.log('Web Speech API is not supported in this browser.');
-        }
-    </script>
 </body>
 
 </html>
